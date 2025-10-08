@@ -1,0 +1,35 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TournamentController;
+
+Route::get('/', function () {
+    return view('home', [
+        'recentTournaments' => auth()->check() ? auth()->user()->recentlyViewedTournaments ?? collect() : collect()
+    ]);
+})->name('home');
+
+// Protected routes (only logged-in users)
+Route::middleware('auth')->group(function () {
+    Route::get('tournaments/create', [TournamentController::class, 'create'])->name('tournaments.create');
+    Route::post('tournaments', [TournamentController::class, 'store'])->name('tournaments.store');
+    
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+
+// Public routes (anyone can view)
+Route::get('tournaments', [TournamentController::class, 'index'])->name('tournaments.index');
+Route::get('tournaments/{tournament}', [TournamentController::class, 'show'])
+     ->whereNumber('tournament')
+     ->name('tournaments.show');
+
+// Dashboard (authenticated + verified)
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+require __DIR__.'/auth.php';
