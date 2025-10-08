@@ -3,12 +3,12 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('home', [
-        'recentTournaments' => auth()->check() ? auth()->user()->recentlyViewedTournaments ?? collect() : collect()
-    ]);
-})->name('home');
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+
 
 // Protected routes (only logged-in users)
 Route::middleware('auth')->group(function () {
