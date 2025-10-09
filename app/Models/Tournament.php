@@ -4,18 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class Tournament extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'start_date', 'end_date', 'user_id'
+        'name',
+        'description',
+        'format',
+        'participants_count',
+        'participants',
     ];
 
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+    protected $casts = [
+        'participants' => 'array', // automatically cast JSON to array
+    ];
 }

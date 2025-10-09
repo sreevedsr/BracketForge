@@ -1,24 +1,29 @@
 <x-app-layout>
     <!-- Banner Section -->
-    <div class="relative bg-gray-100 dark:bg-gray-800">
-        <div class="h-64 sm:h-80 md:h-96 flex items-center justify-center bg-cover bg-center relative"
-            style="background-image: url('{{ asset('images/banner (2).jpg') }}');">
+    <div class="h-64 sm:h-80 md:h-96 flex flex-col justify-center items-center bg-cover bg-center relative"
+        style="background-image: url('{{ asset('images/banner (2).jpg') }}'); padding-bottom: 3rem;">
+        <!-- Dark overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-55"></div>
 
-            <!-- Dark overlay -->
-            <div class="absolute inset-0 bg-black bg-opacity-55"></div>
-
-            <!-- Heading -->
-            <div class="relative text-center mx-4 sm:mx-6">
-                <h1 class="text-3xl sm:text-4xl font-bold text-white">Welcome to BracketForge</h1>
-                <p class="mt-2 text-white/80 sm:text-lg">Create, join, and view tournaments with ease</p>
-            </div>
+        <!-- Heading -->
+        <div class="relative text-center mx-4 sm:mx-6">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
+                Welcome to BracketForge
+            </h1>
+            <p class="mt-2 text-white/80 text-sm sm:text-base md:text-lg">
+                Create, join, and view tournaments with ease
+            </p>
         </div>
     </div>
 
+
     <!-- Full-width Tournament Section (Overlapping Banner) -->
-    <section
-        class="bg-gray-50 dark:bg-gray-950 py-12 px-4 sm:px-6 lg:px-8 -mt-16 sm:-mt-20 rounded-t-3xl shadow-xl relative z-10">
-        <div class="max-w-6xl mx-auto">
+    <section class="bg-gray-50 dark:bg-gray-950 py-12 px-4 sm:px-6 lg:px-8 
+  -mt-16 sm:-mt-20 rounded-t-3xl shadow-xl relative z-10
+  min-h-[calc(100vh-257px)] md:min-h-[calc(100vh-369px)]">
+
+
+        <div class="max-w-6xl mx-auto flex-1">
             <!-- Section Header -->
             <div class="text-center mb-10">
                 <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100">All Tournaments</h2>
@@ -53,14 +58,15 @@
     </section>
 
 
+
+    <!-- Desktop Sticky Buttons -->
     <!-- Desktop Sticky Buttons -->
     <div class="hidden md:flex fixed bottom-0 left-0 right-0 bg-transparent shadow-none p-4 justify-center gap-4 z-40">
-        @auth
-            <a href="{{ route('tournaments.create') }}"
-                class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition">
-                Create Tournament
-            </a>
-        @endauth
+        <a href="{{ auth()->check() ? route('tournaments.create') : route('login') }}"
+            class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition">
+            Create Tournament
+        </a>
+
         <a href="{{ route('tournaments.index') }}"
             class="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-lg transition">
             View Tournaments
@@ -101,12 +107,11 @@
             </div>
 
             <div class="space-y-3">
-                @auth
-                    <a href="{{ route('tournaments.create') }}"
-                        class="block w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-center font-semibold rounded-lg transition">
-                        Create Tournament
-                    </a>
-                @endauth
+                <a href="{{ auth()->check() ? route('tournaments.create') : route('login') }}"
+                    class="block w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-center font-semibold rounded-lg transition">
+                    Create Tournament
+                </a>
+
                 <a href="{{ route('tournaments.index') }}"
                     class="block w-full px-4 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 text-center font-semibold rounded-lg transition">
                     View Tournaments
@@ -114,4 +119,5 @@
             </div>
         </div>
     </div>
+
 </x-app-layout>

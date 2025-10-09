@@ -2,49 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Tournament;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class TournamentController extends Controller
 {
-    // Show all tournaments
-    public function index()
-    {
-        $tournaments = Tournament::latest()->get();
-        return view('tournaments.index', compact('tournaments'));
-    }
-
-    // Show create form
     public function create()
     {
         return view('tournaments.create');
     }
 
-    // Store new tournament
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'format' => 'required|string|max:100',
+            'participants_count' => 'required|integer|min:1',
+            'participants.*' => 'required|string|max:255',
         ]);
+
+        // store participants as JSON
+        $participants = $data['participants'];
 
         Tournament::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'user_id' => Auth::id(),
+            'name' => $data['name'],
+            'description' => $data['description'] ?? null,
+            'format' => $data['format'],
+            'participants_count' => $data['participants_count'],
+            'participants' => $participants,
         ]);
 
-        return redirect()->route('tournaments.index')->with('success', 'Tournament created successfully!');
-    }
-
-    // Show single tournament
-    public function show(Tournament $tournament)
-    {
-        return view('tournaments.show', compact('tournament'));
+        return redirect()->route('tournaments.create')->with('success', 'Tournament created successfully!');
     }
 }
