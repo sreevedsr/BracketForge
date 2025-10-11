@@ -14,25 +14,29 @@ class TournamentController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'format' => 'required|string|max:100',
-            'participants_count' => 'required|integer|min:1',
+            'format' => 'required|string',
+            'participants' => 'required|array|min:2',
             'participants.*' => 'required|string|max:255',
         ]);
 
-        // store participants as JSON
-        $participants = $data['participants'];
-
         Tournament::create([
-            'name' => $data['name'],
-            'description' => $data['description'] ?? null,
-            'format' => $data['format'],
-            'participants_count' => $data['participants_count'],
-            'participants' => $participants,
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'format' => $validated['format'],
+            'participants_count' => count($validated['participants']),
+            'participants' => json_encode($validated['participants']),
         ]);
 
-        return redirect()->route('tournaments.create')->with('success', 'Tournament created successfully!');
+        return redirect()->route('home')->with('success', 'Tournament created successfully!');
     }
+
+    public function show($id)
+    {
+        $tournament = Tournament::findOrFail($id);
+        return view('tournaments.show', compact('tournament'));
+    }
+
 }

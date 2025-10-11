@@ -27,8 +27,11 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        // dd(session('url.intended'));
 
-        return redirect()->intended(route('home', absolute: false));
+        $intended = session()->pull('url.intended');
+
+        return redirect()->to($intended ?? route('home'));
     }
 
     /**

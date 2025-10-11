@@ -2,7 +2,7 @@
     <!-- Banner Section -->
     <div class="h-64 sm:h-80 md:h-96 flex flex-col justify-center items-center bg-cover bg-center relative"
         style="background-image: url('{{ asset('images/banner (2).jpg') }}'); padding-bottom: 3rem;">
-        <!-- Dark overlay -->
+
         <div class="absolute inset-0 bg-black bg-opacity-55"></div>
 
         <!-- Heading -->
@@ -15,13 +15,12 @@
             </p>
         </div>
     </div>
-
+ 
 
     <!-- Full-width Tournament Section (Overlapping Banner) -->
     <section class="bg-gray-50 dark:bg-gray-950 py-12 px-4 sm:px-6 lg:px-8 
   -mt-16 sm:-mt-20 rounded-t-3xl shadow-xl relative z-10
   min-h-[calc(100vh-257px)] md:min-h-[calc(100vh-369px)]">
-
 
         <div class="max-w-6xl mx-auto flex-1">
             <!-- Section Header -->
@@ -59,10 +58,8 @@
 
 
 
-    <!-- Desktop Sticky Buttons -->
-    <!-- Desktop Sticky Buttons -->
     <div class="hidden md:flex fixed bottom-0 left-0 right-0 bg-transparent shadow-none p-4 justify-center gap-4 z-40">
-        <a href="{{ auth()->check() ? route('tournaments.create') : route('login') }}"
+        <a href="{{ route('tournaments.create') }}"
             class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition">
             Create Tournament
         </a>
@@ -73,9 +70,7 @@
         </a>
     </div>
 
-    <!-- Mobile Floating Button and Bottom Sheet -->
     <div x-data="{ open: false }" class="sm:hidden fixed bottom-6 right-6 z-50">
-        <!-- Floating Action Button -->
         <button @click="open = true"
             class="w-14 h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full shadow-xl flex items-center justify-center transition transform active:scale-95">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
@@ -107,7 +102,7 @@
             </div>
 
             <div class="space-y-3">
-                <a href="{{ auth()->check() ? route('tournaments.create') : route('login') }}"
+                <a href="{{ route('tournaments.create')}}"
                     class="block w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-center font-semibold rounded-lg transition">
                     Create Tournament
                 </a>
@@ -119,5 +114,4 @@
             </div>
         </div>
     </div>
-
 </x-app-layout>
