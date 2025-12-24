@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-background text-foreground">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme')
+
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark')
+                } else if (theme === 'light') {
+                    document.documentElement.classList.remove('dark')
+                } else {
+                    // System preference
+                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        document.documentElement.classList.add('dark')
+                    }
+                }
+            } catch (e) {
+                // Fail silently
+            }
+        })();
+    </script>
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -16,21 +36,23 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+<body class="h-full font-sans antialiased transition-colors duration-300">
+    <div class="min-h-screen bg-background text-foreground">
         @include('layouts.navigation')
 
-        <!-- Page Heading -->
+        <x-flash-messages />
+
+
+        {{-- Page Heading --}}
         @isset($header)
-            <header class="bg-gray-100 dark:bg-gray-800 shadow transition-colors duration-300">
+            <header class="bg-card text-card-foreground border-b border-border shadow-sm transition-colors duration-300">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
             </header>
-
         @endisset
 
-        <!-- Page Content -->
+        {{-- Page Content --}}
         <main>
             {{ $slot }}
         </main>

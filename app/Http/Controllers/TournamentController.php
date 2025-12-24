@@ -2,40 +2,86 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\FixtureGenerator;
 use App\Models\Tournament;
+use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TournamentController extends Controller
 {
+    /**
+     * List tournaments (public / invited logic can come later)
+     */
+    public function index()
+    {
+        $tournaments = Tournament::latest()->get();
+
+        return view('tournaments.index', compact('tournaments'));
+    }
+
+    /**
+     * Show create form
+     */
     public function create()
     {
         return view('tournaments.create');
     }
 
+    /**
+     * Store tournament using new schema
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'format' => 'required|string',
-            'participants' => 'required|array|min:2',
-            'participants.*' => 'required|string|max:255',
+            'type' => 'required|in:league,round_robin,knockout,hybrid',
+            'teams' => 'required|array|min:2',
+            'teams.*' => 'required|string|max:255',
         ]);
 
-        Tournament::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'format' => $validated['format'],
-            'participants_count' => count($validated['participants']),
-            'participants' => json_encode($validated['participants']),
-        ]);
+        DB::transaction(function () use ($validated) {
 
-        return redirect()->route('home')->with('success', 'Tournament created successfully!');
+            // 1️⃣ Create Tournament
+            $tournament = Tournament::create([
+                'user_id' => auth()->id(),
+                'name' => $validated['name'],
+                'description' => $validated['description'] ?? null,
+                'type' => $validated['type'],
+                'status' => 'draft',
+                'max_teams' => count($validated['teams']),
+            ]);
+
+            // 2️⃣ Create Teams (USER-DEFINED)
+            foreach ($validated['teams'] as $index => $teamName) {
+                $tournament->teams()->create([
+                    'name' => $teamName,
+                    'seed' => $index + 1,
+                ]);
+            }
+
+            FixtureGenerator::generate($tournament);
+
+        });
+
+        return redirect()
+            ->route('tournaments.index')
+            ->with('success', 'Tournament created successfully!');
     }
 
-    public function show($id)
+
+    /**
+     * Show a tournament (route-model binding)
+     */
+    public function show(Tournament $tournament)
     {
-        $tournament = Tournament::findOrFail($id);
+        $tournament->load([
+            'teams',
+            'fixtures.homeTeam',
+            'fixtures.awayTeam',
+        ]);
+
         return view('tournaments.show', compact('tournament'));
     }
 

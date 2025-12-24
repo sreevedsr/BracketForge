@@ -10,14 +10,25 @@ class Tournament extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'description',
-        'format',
-        'participants_count',
-        'participants',
+        'type',
+        'status',
+        'max_teams',
+        'qualified_teams',
+        'starts_at',
+        'ends_at',
     ];
 
-    protected $casts = [
-        'participants' => 'array', // automatically cast JSON to array
-    ];
+    public function teams()
+    {
+        return $this->hasMany(Team::class);
+    }
+
+    public function fixtures()
+    {
+        return $this->hasMany(Fixture::class);
+    }
+
 }

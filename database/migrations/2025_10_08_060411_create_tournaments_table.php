@@ -9,11 +9,25 @@ return new class extends Migration {
     {
         Schema::create('tournaments', function (Blueprint $table) {
             $table->id();
+
+            // SaaS owner
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+
             $table->string('name');
             $table->text('description')->nullable();
-            $table->date('start_date');
-            $table->date('end_date')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null'); // creator
+
+            // league | round_robin | knockout | hybrid
+            $table->string('type');
+
+            $table->unsignedInteger('max_teams')->nullable();
+            $table->unsignedInteger('qualified_teams')->nullable(); // for league → knockout
+
+            // draft | ongoing | completed
+            $table->string('status')->default('draft');
+
+            $table->timestamp('starts_at')->nullable();
+            $table->timestamp('ends_at')->nullable();
+
             $table->timestamps();
         });
     }
