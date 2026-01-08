@@ -24,6 +24,7 @@ return new class extends Migration {
 
             // draft | ongoing | completed
             $table->string('status')->default('draft');
+        
 
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();

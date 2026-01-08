@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\FixtureStatus;
+use App\Models\Tournament;
+
 
 class Fixture extends Model
 {
@@ -16,6 +19,9 @@ class Fixture extends Model
         'home_score',
         'away_score',
         'winner_team_id',
+    ];
+    protected $casts = [
+        'status' => FixtureStatus::class,
     ];
 
     public function homeTeam()
@@ -31,5 +37,9 @@ class Fixture extends Model
     public function winner()
     {
         return $this->belongsTo(Team::class, 'winner_team_id');
+    }
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
     }
 }

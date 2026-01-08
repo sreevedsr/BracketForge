@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Fixture;
 use Illuminate\Http\Request;
+use App\Services\TournamentCompletionService;
 
 class FixtureResultController extends Controller
 {
@@ -13,6 +14,16 @@ class FixtureResultController extends Controller
             'home_score' => 'required|integer|min:0',
             'away_score' => 'required|integer|min:0',
         ]);
+
+        if (
+            $fixture->tournament->type === 'knockout' &&
+            $data['home_score'] === $data['away_score']
+        ) {
+            return back()
+                ->withErrors([
+                    'score' => 'Knockout matches cannot end in a draw.',
+                ]);
+        }
 
         $winnerId = null;
 
@@ -28,6 +39,8 @@ class FixtureResultController extends Controller
             'winner_team_id' => $winnerId,
             'status' => 'completed',
         ]);
+        app(TournamentCompletionService::class)
+            ->evaluate($fixture->tournament);
 
         return back()->with('success', 'Result saved.');
     }

@@ -54,7 +54,7 @@
                                 class="inline-flex items-center rounded-full
                                        bg-secondary px-3 py-1 text-xs font-medium
                                        text-secondary-foreground">
-                                {{ ucfirst($tournament->status) }}
+                                {{ $tournament->status->label() }}
                             </span>
                         </dd>
                     </div>
@@ -98,7 +98,12 @@
                     </ul>
                 @endif
             </div>
-
+            @if ($tournament->status === \App\Enums\TournamentStatus::COMPLETED)
+                <div class="rounded-xl bg-green-500/10 p-4 text-green-600">
+                    Tournament completed.
+                    Winner: {{ $tournament->winner->name }}
+                </div>
+            @endif
             {{-- Fixtures --}}
             <div class="bg-card text-card-foreground
            rounded-2xl border border-border shadow-sm p-6">
